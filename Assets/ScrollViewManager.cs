@@ -10,6 +10,8 @@ public class ScrollViewManager : MonoBehaviour
     /// </summary>
     public class ContentData
     {
+        private Transform objTransform;
+
         private Text NameText;
 
         public Button ActionBtn;
@@ -22,18 +24,33 @@ public class ScrollViewManager : MonoBehaviour
         {
             var obj = Instantiate(prefab, parentObj.transform);
 
+            objTransform = obj.transform;
+
             NameText = obj.transform.Find("NameLabel").GetComponent<Text>();
 
             ActionBtn = obj.transform.GetComponent<Button>();
 
             SelectImg = obj.transform.Find("SelectImg").GetComponent<Image>();
+            
         }
 
         public void SetData(string setName)
         {
+            objTransform.gameObject.name = setName;
+
             Name = setName;
 
             NameText.text = Name;
+        }
+
+        public void SetSelect(bool flag)
+        {
+            SelectImg.enabled = flag;
+        }
+
+        public void Delete()
+        {
+            Destroy(this.objTransform.gameObject);
         }
     }
 
@@ -55,7 +72,7 @@ public class ScrollViewManager : MonoBehaviour
 
     public List<ContentData> ContentList { get; set; }
 
-    public int SelectNo { get; set; }
+    public int SelectNo;
 
     private void Start()
     {
@@ -65,11 +82,19 @@ public class ScrollViewManager : MonoBehaviour
         {
             var content = new ContentData(contentPrefab, scrollContent);
 
-            content.SetData($"私は:{ContentList.Count}");
+            var count = ContentList.Count;
+
+            content.SetData($"私は:{count}");
 
             content.ActionBtn.onClick.AddListener(() =>
             {
-                SelectNo = ContentList.Count - 1;
+                foreach(var listData in ContentList)
+                {
+                    listData.SetSelect(false);
+                }
+                
+                SelectNo = count;
+                content.SetSelect(true);
             });
 
             ContentList.Add(content);
@@ -82,7 +107,8 @@ public class ScrollViewManager : MonoBehaviour
 
         deleteBtn.onClick.AddListener(() =>
         {
-
+            //Hierarchyのオブジェクトを消去
+            ContentList[SelectNo].Delete();
 
             //指定番号を消去
             ContentList.RemoveAt(SelectNo);
