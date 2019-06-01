@@ -1727,7 +1727,6 @@ MonoBehaviour:
   deleteBtn: {fileID: 462470192}
   contentPrefab: {fileID: 6070292763392976150, guid: 10056f1186f364352a33eba8674f07c5,
     type: 3}
-  SelectNo: 0
 --- !u!4 &2095881945
 Transform:
   m_ObjectHideFlags: 0

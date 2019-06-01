@@ -31,7 +31,7 @@ public class ScrollViewManager : MonoBehaviour
             ActionBtn = obj.transform.GetComponent<Button>();
 
             SelectImg = obj.transform.Find("SelectImg").GetComponent<Image>();
-            
+
         }
 
         public void SetData(string setName)
@@ -72,7 +72,7 @@ public class ScrollViewManager : MonoBehaviour
 
     public List<ContentData> ContentList { get; set; }
 
-    public int SelectNo;
+    public int SelectNo { get; set; }
 
     private void Start()
     {
@@ -88,11 +88,11 @@ public class ScrollViewManager : MonoBehaviour
 
             content.ActionBtn.onClick.AddListener(() =>
             {
-                foreach(var listData in ContentList)
+                foreach (var listData in ContentList)
                 {
                     listData.SetSelect(false);
                 }
-                
+
                 SelectNo = count;
                 content.SetSelect(true);
             });
@@ -107,11 +107,31 @@ public class ScrollViewManager : MonoBehaviour
 
         deleteBtn.onClick.AddListener(() =>
         {
+            for (var i = SelectNo; i <= ContentList.Count - 1; i++)
+            {
+                ContentList[i].ActionBtn.onClick.RemoveAllListeners();
+
+                var count = i - 1;
+
+                ContentList[i].ActionBtn.onClick.AddListener(() =>
+                {
+                    foreach (var listData in ContentList)
+                    {
+                        listData.SetSelect(false);
+                    }
+
+                    SelectNo = count;
+                    ContentList[count].SetSelect(true);
+                });
+
+            }
+
             //Hierarchyのオブジェクトを消去
             ContentList[SelectNo].Delete();
 
             //指定番号を消去
             ContentList.RemoveAt(SelectNo);
+            
         });
     }
 
